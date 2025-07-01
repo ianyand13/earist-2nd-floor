@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eulogio "Amang" Rodriguez Institute of Science and Technology</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Pannellum CSS for 360-degree viewer -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+
+    <!-- Model Viewer for 3D GLB files -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    
+    <style>
+        /* General Body and Root Variables */
+        body {
+            font-family: 'Oswald', sans-serif;
+            margin: 0;
+            /* Enhanced Interactive background: Subtle, slow-moving radial gradient with animated noise */
+            background: radial-gradient(circle at 75% 25%, rgba(240, 78, 35, 0.1), rgba(42, 42, 42, 0.9), #1a1a1a);
+            background-size: 300% 300%; /* Larger size for smoother pan */
+            animation: backgroundPan 60s ease infinite alternate; /* Slower, gentler animation */
+            position: relative; /* Needed for pseudo-element overlay */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            padding-top: 0; /* No fixed header on landing page initially */
+        }
+
+        /* Subtle noise overlay for background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIxIi8+PGZlVHVyYmVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNzUiIG51bU9jdGF2ZXM9IjIiHNlYW09InNlYW0iLz48ZmVDb21wb3NpZGUgb3BlcmF0b3I9ImluIiBpbjI9IlNvdXJjZUdyYXBoaWMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmZmIiBmaWx0ZXI9InVybCgjbikiIG9wYWNpdHk9IjAuMDMiLz48L3N2Z2c+');
+            background-size: cover;
+            animation: noiseAnimation 120s linear infinite; /* Very slow movement for subtle effect */
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: -1; /* Keep behind content */
+        }
+
+        @keyframes backgroundPan {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; } /* Return to start for infinite loop */
+        }
+
+        @keyframes noiseAnimation {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        :root {
+            --primary-color: #f04e23; /* EARIST orange */
+            --dark-bg: #222;
+            --medium-bg: #333;
+            --light-text: #fff;
+            --room-border: rgba(255, 255, 255, 0.7); /* Softer white border */
+            --room-hover-bg: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+            --header-vertical-padding: 1vw; /* Reduced padding */
+            --header-logo-height: 5vw; /* Slightly smaller logo */
+            --header-h1-font-size: 2.5em;
+            --floor-plan-margin-top: 0.5vw; /* Further reduced margin */
+            --floor-plan-padding: 1.5vw;
+            --floor-plan-gap: 0.5vw;
+            /* Estimated header height for floor plan view, used for padding-top */
+            --estimated-header-total-height: calc(var(--header-vertical-padding) * 2 + var(--header-logo-height) + 0.5vw); /* Adjusted calculation */
+        }
+
+        /* --- Landing Page Styles --- */
+        #landingPage {
+            text-align: center;
+            background-color: #1a1a1a; /* Darker background for the container */
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.7); /* Stronger shadow */
+            border: 2px solid var(--primary-color); /* Border matches theme */
+            animation: fadeIn 1s ease-out;
+            display: flex; /* Use flexbox for centering content within */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box; /* Important for padding calculations */
+
+            /* Responsive sizing for the box itself to fit within viewport */
+            width: clamp(300px, 80vw, 700px); /* Min-width, preferred width, max-width */
+            height: clamp(300px, 80vh, 500px); /* Min-height, preferred height, max-height */
+            padding: 2vmin; /* Responsive padding based on viewport min dimension */
+            overflow: hidden; /* Hide overflow if content is too large */
+        }
+
+        #landingPage img {
+            width: clamp(80px, 15vmin, 150px); /* Responsive logo size */
+            height: auto;
+            margin-bottom: 2vmin; /* Responsive margin */
+            border-radius: 10px; /* Rounded corners for logo */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        #landingPage h1 {
+            color: var(--primary-color);
+            font-size: clamp(1.5em, 5vmin, 3.5em); /* Responsive font size */
+            margin-bottom: 3vmin; /* Responsive margin */
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.6); /* Text shadow for depth */
+        }
+
+        .enter-button {
+            padding: 1.5vmin 3vmin; /* Responsive padding for a bigger button */
+            font-size: clamp(1em, 3vmin, 1.8em); /* Responsive font for the button text */
+            font-weight: 700; /* Bolder text */
+            color: var(--light-text);
+            background: linear-gradient(to right, var(--primary-color), #d63e1c); /* Gradient background */
+            border: none;
+            border-radius: 30px; /* Pill-shaped button */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5); /* Stronger button shadow */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            outline: none; /* Remove outline on focus */
+        }
+
+        .enter-button:hover {
+            background: linear-gradient(to right, #d63e1c, var(--primary-color)); /* Reverse gradient on hover */
+            transform: translateY(-5px) scale(1.05); /* More pronounced lift and scale */
+            box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+        }
+
+        .enter-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsive adjustments for landing page */
+        @media (max-width: 768px) {
+            #landingPage {
+                padding: 15px;
+                width: 95%; /* Adjust width for smaller screens */
+                height: auto; /* Reverted to auto height */
+            }
+            #landingPage img {
+                width: 100px;
+                margin-bottom: 15px;
+            }
+            #landingPage h1 {
+                font-size: 2.2em; /* Smaller font for mobile */
+                margin-bottom: 20px;
+                letter-spacing: 1px;
+            }
+            .enter-button {
+                padding: 12px 25px;
+                font-size: 1.4em;
+            }
+        }
+
+        /* --- Floor Plan App Styles --- */
+        #floorPlanApp {
+            display: none; /* Hidden by default */
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            /* Added padding-top to prevent content from being hidden by the fixed header */
+            padding-top: var(--estimated-header-total-height); 
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        /* Header Styling */
+        .header {
+            width: 100%;
+            background: linear-gradient(to right, #1a1a1a, #2a2a2a, #1a1a1a); /* Subtle gradient */
+            padding: var(--header-vertical-padding) 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-color);
+            z-index: 10;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4); /* More pronounced shadow */
+            
+            /* Make the header sticky */
+            position: fixed; 
+            top: 0;
+            left: 0; /* Ensure it spans the full width */
+            right: 0; /* Ensure it spans the full width */
+
+            /* New: Subtle header glow animation */
+            animation: headerGlow 5s infinite alternate;
+        }
+
+        @keyframes headerGlow {
+            0% { box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+            100% { box-shadow: 0 5px 20px rgba(240, 78, 35, 0.6), 0 0 30px rgba(240, 78, 35, 0.3); }
+        }
+
+        .header .logo-container {
+            position: absolute;
+            left: 2vw; /* Keep it on the left */
+            display: flex;
+            align-items: center;
+            gap: 0.8vw; /* Adjusted gap between logos for better visual balance */
+        }
+
+        .header .logo-aces,
+        .header .logo-earist {
+            height: var(--header-logo-height);
+            width: auto;
+            object-fit: contain;
+            border-radius: 5px; /* Slightly rounded corners for logos */
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .header .logo-aces:hover,
+        .header .logo-earist:hover {
+            transform: scale(1.05); /* Slight scale on hover */
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: var(--header-h1-font-size);
+            letter-spacing: 3px; /* Increased letter spacing */
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Text shadow for depth */
+        }
+
+        .header .back-button {
+            position: absolute;
+            right: 2vw;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--light-text);
+            background-color: #555; /* Darker grey for distinction */
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header .back-button:hover {
+            background-color: #777;
+            transform: translateY(-2px);
+        }
+
+        /* Floor Plan Container */
+        .floor-plan-container {
+            aspect-ratio: 1.71 / 1; 
+            --available-width: 98vw; 
+            --available-height: calc(100vh - var(--estimated-header-total-height) - var(--floor-plan-margin-top));
+            width: min(var(--available-width), calc(var(--available-height) * 1.71));
+            height: min(var(--available-height), calc(var(--available-width) / 1.71));
+            
+            background: linear-gradient(135deg, #f04e23, #d63e1c); /* Gradient background */
+            padding: var(--floor-plan-padding); 
+            box-sizing: border-box;
+            margin-top: var(--floor-plan-margin-top); /* Adjusted margin-top */
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Stronger shadow */
+            display: grid;
+            grid-template-columns: repeat(30, 1fr); 
+            grid-template-rows: repeat(20, 1fr);   
+            gap: var(--floor-plan-gap); 
+            position: relative;
+            flex-grow: 1; 
+            flex-shrink: 1; 
+        }
+
+        /* Room Styling */
+        .room {
+            border: 2px solid var(--room-border); /* Softer border */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.65em; /* Adjusted font size for better fit */
+            line-height: 1.2; /* Improved line height for multi-line text */
+            font-weight: 400; /* Less bold, more readable */
+            color: var(--light-text);
+            opacity: 0.85; /* Slightly reduced opacity for a softer look */
+            box-sizing: border-box;
+            padding: 0.3vw; /* Adjusted padding */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal; /* Allow text to wrap naturally */
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; 
+            border-radius: 4px; /* Slightly rounded corners for rooms */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3); /* Subtle inner shadow for depth */
+        }
+        .room:hover {
+            background-color: var(--room-hover-bg); 
+            transform: translateY(-2px) scale(1.01); /* Slight lift and subtle scale effect */
+            opacity: 1; /* Full opacity on hover */
+            box-shadow: inset 0 0 8px rgba(255,255,255,0.2), 0 5px 10px rgba(0,0,0,0.3); /* Enhanced shadow on hover */
+            animation: pulse 0.5s infinite alternate; /* Subtle pulse animation */
+        }
+        .room br { white-space: normal; } 
+
+        /* Pulse animation for rooms on hover */
+        @keyframes pulse {
+            from { transform: translateY(-2px) scale(1.01); }
+            to { transform: translateY(-3px) scale(1.02); }
+        }
+
+        /* Click feedback for rooms */
+        .room.clicked-feedback {
+            box-shadow: 0 0 20px 5px rgba(255, 255, 0, 0.7), inset 0 0 10px rgba(255, 255, 0, 0.7); /* Yellow glow */
+            border-color: yellow;
+            transform: scale(1.02);
+            animation: roomClickRipple 0.4s ease-out forwards; /* Add a ripple animation */
+        }
+
+        @keyframes roomClickRipple {
+            0% {
+                box-shadow: 0 0 0px 0px rgba(255, 255, 0, 0.7), inset 0 0 0px rgba(255, 255, 0, 0.7);
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                box-shadow: 0 0 20px 8px rgba(255, 255, 0, 0.7), inset 0 0 10px rgba(255, 255, 0, 0.7);
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                box-shadow: 0 0 0px 0px rgba(255, 255, 0, 0), inset 0 0 0px rgba(255, 255, 0, 0);
+                transform: scale(1);
+                opacity: 0.85; /* Return to original opacity */
+            }
+        }
+
+        /* Color Classes */
+        .color-maroon { background-color: #8c2a38; }
+        .color-brown { background-color: #92752e; }
+        .color-grey { background-color: #4a4a4a; }
+        .color-darkgrey { background-color: #666; } 
+
+
+        /* --- ROOM PLACEMENT AND SIZING (EXACTLY AS PROVIDED IN YOUR CODE) --- */
+
+        /* Top Row */
+        .comfort-female-top { grid-column: 4 / span 3; grid-row: 1 / span 4; background-color: #8c2a38; }
+        .comfort-male-top { grid-column: 1 / span 3; grid-row: 1 / span 4; background-color: #8c2a38; }
+        .faculty-room { grid-column: 9 / span 5; grid-row: 1 / span 4; background-color: #92752e; }
+        .room-211 { grid-column: 14 / span 3; grid-row: 1 / span 4; background-color: #4a4a4a; }
+        .room-210 { grid-column: 17 / span 3; grid-row: 1 / span 4; background-color: #4a4a4a; }
+        .room-209 { grid-column: 20 / span 3; grid-row: 1 / span 4; background-color: #4a4a4a; }
+        .room-208 { grid-column: 23 / span 8; grid-row: 1 / span 4; background-color: #4a4a4a; } 
+
+        /* Left Side Middle */
+        .dean-office { grid-column: 1 / span 6; grid-row: 7 / span 5; background-color: #92752e; }
+        .auditors-office { grid-column: 1 / span 6; grid-row: 12 / span 4; background-color: #92752e; }
+
+        /* Large Middle Area */
+        .open-below { 
+            grid-column: 9 / span 13; 
+            grid-row: 7 / span 9; 
+            background-color: #333; /* Slightly different background for non-clickable */
+            font-size: 1.5em; 
+            white-space: normal;
+            cursor: default; /* Make non-clickable */
+            border: 2px dashed rgba(255, 255, 255, 0.4); /* Dashed border for visual cue */
+            opacity: 0.7; /* Slightly more transparent */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5); /* Deeper inner shadow */
+        }
+        .open-below:hover { /* Remove hover effects for non-clickable */
+            background-color: #333;
+            transform: none;
+            opacity: 0.7;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            animation: none;
+        }
+
+        /* Right Side Middle */
+        .stock-room-right { grid-column: 26 / span 5; grid-row: 7 / span 3; background-color: #4a4a4a; }
+        .accreditation-room { grid-column: 26 / span 5; grid-row: 10 / span 7; background-color: #4a4a4a; }
+        .open-area-small { 
+            grid-column: 21 / span 2; 
+            grid-row: 8 / span 7; 
+            background-color: #333; /* Slightly different background for non-clickable */
+            border: 2px dashed rgba(255, 255, 255, 0.4); /* Dashed border for visual cue */ 
+            font-size: 0.8em; 
+            white-space: normal; 
+            cursor: default; /* Make non-clickable */
+            opacity: 0.7;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .open-area-small:hover { /* Remove hover effects for non-clickable */
+            background-color: #333;
+            transform: none;
+            opacity: 0.7;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            animation: none;
+        }
+
+
+        /* Bottom Row */
+        .room-201-stock { grid-column: 1 / span 5; grid-row: 18 / span 3; background-color: #8c2a38; }
+        .cen-computer-lab-2 { grid-column: 9 / span 5; grid-row: 18 / span 3; background-color: #92752e; }
+        .computer-stock-room-bottom { grid-column: 14 / span 3; grid-row: 18 / span 3; background-color: #92752e; }
+        .cen-computer-lab-1 { grid-column: 17 / span 3; grid-row: 18 / span 3; background-color: #92752e; }
+        .mechatronics { grid-column: 20 / span 3; grid-row: 18 / span 3; background-color: #92752e; }
+        
+        /* Bottom Right Comfort Rooms */
+        .comfort-male-bottom { grid-column: 26 / span 3; grid-row: 18 / span 3; background-color: #8c2a38; }
+        .comfort-female-bottom { grid-column: 29 / span 3; grid-row: 18 / span 3; background-color: #8c2a38; }
+
+
+        /* --- STAIRS VISUAL UPGRADE AND NON-CLICKABLE --- */
+        .stairs-top-left,
+        .stairs-top-right,
+        .stairs-bottom-right {
+            cursor: default;
+            background-color: #333; /* Slightly different background for non-clickable */
+            background-image: linear-gradient(
+                45deg, 
+                #555 25%, #666 25%, #666 50%, 
+                #555 50%, #555 75%, #666 75%, #666 100%
+            );
+            background-size: 10px 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.4); /* Dashed border for visual cue */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: #ddd;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            border-radius: 4px; /* Consistent rounded corners */
+            opacity: 0.7;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .stairs-top-left:hover, /* Remove hover effects for non-clickable */
+        .stairs-top-right:hover,
+        .stairs-bottom-right:hover {
+            background-color: #333;
+            transform: none;
+            opacity: 0.7;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            animation: none;
+        }
+
+
+        /* Specific stair placements (preserved) */
+        .stairs-top-left { grid-column: 7 / span 2; grid-row: 1 / span 4; }
+        .stairs-top-right { grid-column: 26 / span 5 ; grid-row: 5 / span 2; }
+        .stairs-bottom-right { grid-column: 23 / span 2; grid-row: 18 / span 3; }
+
+
+        /* Bridge text - Using percentages for positioning relative to the flexible container */
+        .to-bridge {
+            position: absolute;
+            bottom: 9%; 
+            left: 20%; 
+            transform: rotate(-90deg);
+            color: var(--light-text);
+            font-size: 0.85em; /* Slightly larger */
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            cursor: pointer; /* Make it clickable */
+            padding: 5px 10px; /* Add padding for better click area */
+            border-radius: 5px;
+            background-color: rgba(0,0,0,0.2); /* Subtle background */
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .to-bridge:hover {
+            background-color: rgba(0,0,0,0.4);
+            transform: rotate(-90deg) scale(1.05); /* Slight scale on hover */
+        }
+        
+        .bridge-line {
+            display: none; 
+        }
+
+        /* Basic responsiveness for smaller screens */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .header .logo-aces,
+            .header .logo-earist {
+                height: 4vw;
+            }
+            .header .logo-container {
+                left: 1vw;
+                gap: 0.5vw;
+            }
+            .header .back-button {
+                right: 1vw;
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+
+            .floor-plan-container {
+                width: 98vw; 
+                height: calc(98vw / 1.71); 
+                padding: 1vw;
+                gap: 0.3vw;
+            }
+            .room {
+                font-size: 0.55em; /* Further reduced for mobile */
+                padding: 0.3vw;
+            }
+            .open-below {
+                font-size: 1em; /* Adjusted for mobile */
+            }
+            .to-bridge {
+                font-size: 0.6em;
+            }
+            .image-modal-content {
+                width: 95%; 
+                padding: 10px;
+            }
+            .media-options {
+                padding: 5px;
+            }
+            .media-options button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            #private-message-viewer {
+                font-size: 1.2em;
+                padding: 10px;
+            }
+            model-viewer {
+                height: 300px; /* Smaller height for mobile */
+            }
+            .image-navigation-buttons button {
+                padding: 8px 12px;
+                font-size: 1.2em;
+            }
+            .image-counter {
+                font-size: 0.9em;
+            }
+        }
+
+        /* --- MODAL STYLES FOR 360 VIEWER AND NEW MEDIA OPTIONS --- */
+        .image-modal-overlay {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; /* Increased z-index */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; 
+            background-color: rgba(0,0,0,0.85); /* Slightly darker overlay */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px); /* Subtle blur effect */
+            opacity: 0; /* For fade-in/out */
+            visibility: hidden; /* For proper hiding */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .image-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-modal-content {
+            position: relative;
+            background-color: #2e2e2e; /* Darker modal background */
+            margin: auto;
+            padding: 25px; /* Increased padding */
+            border: 1px solid var(--primary-color); /* Border matches theme */
+            width: 90%; 
+            height: 80%; 
+            max-width: 1000px; 
+            max-height: 700px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); /* More prominent shadow */
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px; /* More rounded corners */
+            overflow: hidden; 
+            transform: scale(0.8); /* Start smaller for a more pronounced bounce */
+            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Springy bounce */
+        }
+        .image-modal-overlay.show .image-modal-content {
+            transform: scale(1);
+        }
+
+
+        .media-options {
+            display: flex;
+            gap: 15px; /* Increased gap */
+            margin-top: 20px; /* Increased margin */
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color: #1c1c1c; /* Even darker background for button strip */
+            padding: 12px 20px; /* Increased padding */
+            border-radius: 8px; /* More rounded corners */
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.5); /* Inner shadow for buttons strip */
+        }
+
+        .media-options button {
+            padding: 12px 25px; /* Increased padding */
+            font-size: 1.05em; /* Slightly larger font */
+            font-weight: 600; /* A bit bolder for buttons */
+            color: var(--light-text);
+            background: linear-gradient(to right, var(--primary-color), #d63e1c); /* Gradient for buttons */
+            border: none;
+            border-radius: 25px; /* Pill-shaped buttons */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Stronger button shadow */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .media-options button:hover {
+            background: linear-gradient(to right, #d63e1c, var(--primary-color)); /* Reverse gradient on hover */
+            transform: translateY(-3px) scale(1.02); /* More pronounced lift */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .media-options button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Category buttons within the modal */
+        .category-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .category-buttons button {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            background-color: #444;
+            color: var(--light-text);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .category-buttons button:hover {
+            background-color: #666;
+        }
+
+        .category-buttons button.active {
+            background-color: var(--primary-color);
+        }
+
+
+        /* Media Viewers */
+        #panorama-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: black; 
+            display: flex;
+            flex-grow: 1;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 8px; /* Rounded corners for viewer */
+        }
+
+        #static-image-viewer,
+        #video-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: black; 
+            display: none;
+            flex-grow: 1; 
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 8px; /* Rounded corners for viewer */
+            position: relative; /* For image navigation buttons */
+        }
+
+        #static-image-viewer img,
+        #video-viewer video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px; /* Rounded corners for media */
+        }
+
+        .image-navigation-buttons {
+            position: absolute;
+            bottom: 10px; /* Position below the image */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10; /* Above the image */
+        }
+
+        .image-navigation-buttons button {
+            padding: 10px 15px;
+            font-size: 1.5em;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .image-navigation-buttons button:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .image-navigation-buttons button:disabled {
+            background-color: rgba(0,0,0,0.3);
+            cursor: not-allowed;
+        }
+
+        .image-counter {
+            color: white;
+            font-size: 1em;
+            padding: 5px 10px;
+            background-color: rgba(0,0,0,0.6);
+            border-radius: 5px;
+            align-self: center; /* Center vertically with buttons */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* Styles for the private message viewer */
+        #private-message-viewer {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2em; /* Larger font for impact */
+            font-weight: 600; /* Bolder */
+            background-color: #1a1a1a; /* Darker background */
+            border-radius: 8px;
+            padding: 30px;
+            box-sizing: border-box;
+            flex-grow: 1;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.7); /* More pronounced text shadow */
+        }
+
+        #private-message-viewer p {
+            margin: 15px 0; /* Increased margin */
+        }
+
+        /* Loading Spinner for Panorama */
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; /* Above panorama viewer */
+        }
+
+        /* Loading Spinner for Model Viewer */
+        .model-loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px; /* Slightly larger for 3D model */
+            height: 50px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; /* Above model viewer */
+            display: none; /* Hidden by default */
+        }
+
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom Message Box */
+        .custom-message-box-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000; /* Even higher z-index */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+            opacity: 0; /* For fade-in/out */
+            visibility: hidden; /* For proper hiding */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-message-box-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-message-box-content {
+            background-color: #3a3a3a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 400px;
+            color: var(--light-text);
+            font-size: 1.1em;
+            position: relative;
+            transform: scale(0.8); /* For scale-in effect */
+            transition: transform 0.3s ease;
+        }
+        .custom-message-box-overlay.show .custom-message-box-content {
+            transform: scale(1);
+        }
+
+        .custom-message-box-content h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .custom-message-box-content button {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-message-box-content button:hover {
+            background-color: #d63e1c;
+        }
+        /* Button active state for squish effect */
+        .enter-button:active,
+        .header .back-button:active,
+        .media-options button:active,
+        .category-buttons button:active,
+        .image-navigation-buttons button:active,
+        .custom-message-box-content button:active,
+        .model-viewer-controls button:active {
+            transform: scale(0.95); /* Subtle squish */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+
+        /* Animations */
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 15px; /* Adjusted position */
+            right: 25px; /* Adjusted position */
+            font-size: 40px; /* Larger close button */
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 1010; /* Highest z-index */
+            background-color: rgba(0,0,0,0.6); /* Darker background */
+            border-radius: 50%;
+            width: 45px; /* Larger size */
+            height: 45px; /* Larger size */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1; 
+            color: var(--light-text); /* White color */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+            transform: scale(1.1); /* Slight scale on hover */
+        }
+
+        /* Styles for the 3D Model Viewer section */
+        .model-viewer-section {
+            width: 90%;
+            max-width: 1000px;
+            margin: 60px auto; /* More space */
+            background-color: #1a1a1a; /* Darker background */
+            border-radius: 12px; /* More rounded */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6); /* Stronger shadow */
+            overflow: hidden;
+            padding: 30px; /* More padding */
+            box-sizing: border-box;
+            text-align: center;
+            position: relative; /* For spinner positioning */
+        }
+
+        .model-viewer-section h2 {
+            color: var(--primary-color);
+            font-size: 2.5em; /* Larger font */
+            margin-bottom: 25px; /* More margin */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 550px; /* Slightly taller */
+            background-color: #3a3a3a; /* Darker background for the viewer itself */
+            border-radius: 10px;
+            --poster-color: #222;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Style for model-viewer hotspots */
+        model-viewer > button {
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: white;
+            font-weight: bold;
+        }
+        model-viewer > button:hover {
+            background-color: #d63e1c;
+            transform: scale(1.1);
+        }
+        model-viewer > button .dot {
+            display: block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: white;
+        }
+        model-viewer > button .dot-inner {
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+
+        .model-viewer-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .model-viewer-controls button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .model-viewer-controls button:hover {
+            background-color: #d63e1c;
+            transform: translateY(-2px);
+        }
+
+        .model-viewer-section p {
+            color:#ccc; 
+            margin-top: 20px; 
+            font-size: 1em; /* Slightly larger font */
+            opacity: 0.8;
+        }
+
+        /* Tooltip styles */
+        .room-tooltip {
+            position: fixed; /* Or absolute within a positioned parent */
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            pointer-events: none; /* Important: allow mouse events to pass through to elements below */
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translate(-50%, -10px); /* Initial offset for slide-up effect */
+            z-index: 1100; /* Above modals */
+            white-space: nowrap; /* Prevent text wrapping */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 1px solid var(--primary-color);
+        }
+
+        .room-tooltip.show {
+            opacity: 1;
+            transform: translate(-50%, 0); /* Slide into place */
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .tooltip-description {
+            font-size: 0.85em;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page Section -->
+    <div id="landingPage">
+        <img src="logo.png" alt="EARIST Logo"> <!-- Ensure logo.png is in the same directory -->
+        <h1>Eulogio "Amang" Rodriguez Institute of Science and Technology</h1>
+        <button class="enter-button" id="enterButton">Enter</button>
+    </div>
+
+    <!-- Floor Plan Application Section (Initially hidden) -->
+    <div id="floorPlanApp">
+        <div class="header">
+            <!-- ACES Logo - Now wrapped in an anchor tag -->
+            <div class="logo-container">
+                <a href="https://www.facebook.com/acesofficial90" target="_blank" aria-label="Visit ACES Facebook Page">
+                    <img src="aces.jpg" alt="ACES Logo" class="logo-aces"> 
+                </a>
+                <!-- EARIST Logo -->
+                <img src="logo.png" alt="School Logo" class="logo-earist"> 
+            </div>
+            <h1>2ND FLOOR LAYOUT</h1>
+            <button class="back-button" id="backToLandingBtn">Back to Landing Page</button>
+        </div>
+
+        <div class="floor-plan-container">
+            <!-- Top Row Rooms -->
+            <div class="room color-maroon comfort-female-top" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Female+Occupied+1", "https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Female+Occupied+2"], "unoccupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Female+Unoccupied+1"]}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Female Comfort Room"
+                 data-room-info="Restroom facilities for female students and faculty.">COMFORT<br>ROOM<br>FEMALE</div>
+            
+            <div class="room color-maroon comfort-male-top" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Male+Occupied+1"], "unoccupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Male+Unoccupied+1", "https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Male+Unoccupied+2"]}'
+                 data-video-src='{"occupied": "", "unoccupied": "https://www.w3schools.com/html/movie.mp4"}'
+                 data-private="true"
+                 data-room-name="Male Comfort Room"
+                 data-room-info="Restroom facilities for male students and faculty.">COMFORT<br>ROOM<br>MALE</div>
+            
+            <div class="room color-brown faculty-room" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/92752e/FFF?text=Faculty+Room+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Faculty Room"
+                 data-room-info="A dedicated space for faculty members.">FACULTY ROOM</div>
+            
+            <div class="room color-grey room-211" 
+                 data-pano-src="211.jpg"
+                 data-image-srcs='{"occupied": ["static/211RF.jpg","static/211LF.jpg","static/211MF.jpg","static/211LB.jpg","static/211RB.jpg"], "unoccupied": ["st/211O1.jpg","st/211O2.jpg","st/211O3.jpg","st/211O4.jpg","st/211O5.jpg"]}'
+                 data-video-src='{"occupied": "static/211VID.mp4", "unoccupied": "st/211V.mp4"}'
+                 data-room-name="Room 211"
+                 data-room-info="A versatile classroom equipped for lectures and presentations.">ROOM 211</div>
+            
+            <div class="room color-grey room-210" 
+                 data-pano-src="210.jpg"
+                 data-image-srcs='{"occupied": ["static/210LB.jpg","static/210RB.jpg","static/210MB.jpg","static/210RF.jpg","static/210LF.jpg"], "unoccupied": ["st/210O1.jpg","st/210O2.jpg","st/210O3.jpg","st/210O4.jpg","st/210O5.jpg"]}'
+                 data-video-src='{"occupied": "static/210VID.mp4", "unoccupied": ""}'
+                 data-room-name="Room 210"
+                 data-room-info="Another spacious classroom for various academic activities.">ROOM 210</div>
+            
+            <div class="room color-grey room-209" 
+                 data-pano-src="209.jpg"
+                 data-image-srcs='{"occupied": ["st/209O1.jpg","st/209O2.jpg","st/209O3.jpg","st/209O4.jpg","st/209O5.jpg"], "unoccupied": ["static/209RFMT.jpg","static/209LFMT.jpg","static/209RBMT.jpg","static/209LBMT.jpg","static/209FMDMT.jpg","static/209BMDMT.jpg"]}'
+                 data-video-src='{"occupied": "st/209V.mp4", "unoccupied": "static/209VIDEO.mp4"}'
+                 data-room-name="Room 209"
+                 data-room-info="A modern classroom designed for interactive learning.">ROOM 209</div>
+            
+            <div class="room color-grey room-208" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/4a4a4a/FFF?text=Room+208+Occupied+1"], "unoccupied": ["https://placehold.co/800x600/4a4a4a/FFF?text=Room+208+Unoccupied+1"]}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Room 208"
+                 data-room-info="A private room, access restricted.">ROOM 208</div>
+
+            <!-- Left Side Middle -->
+            <div class="room color-brown dean-office" 
+                 data-pano-src="cen.jpg"
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/92752e/FFF?text=Dean+Office+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/movie.mp4", "unoccupied": ""}'
+                 data-room-name="CEN Dean's Office"
+                 data-room-info="Office of the Dean of the College of Engineering.">CEN DEAN'S OFFICE</div>
+            
+            <div class="room color-brown auditors-office" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/92752e/FFF?text=Auditors+Office+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="EARIST Resident Auditors Office"
+                 data-room-info="Private office for the university's auditors.">EARIST RESIDENT<br>AUDITORS OFFICE</div>
+
+            <!-- Large Middle Area -->
+            <div class="room color-grey open-below" 
+                 data-room-name="Open Below"
+                 data-room-info="An open area overlooking the floor below."
+                 >OPEN BELOW</div>
+
+            <!-- Right Side Middle -->
+            <div class="room color-grey stock-room-right" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/4a4a4a/FFF?text=Stock+Room+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Stock Room"
+                 data-room-info="Storage area for departmental supplies.">STOCK ROOM</div>
+            
+            <div class="room color-grey accreditation-room" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/4a4a4a/FFF?text=Accreditation+Room+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="CEN Accreditation Room"
+                 data-room-info="Room used for accreditation processes.">CEN<br>ACCREDITATION<br>ROOM</div>
+            
+            <div class="room color-grey open-area-small" 
+                 data-room-name="Small Open Area"
+                 data-room-info="A small open space for various uses."
+                 >OPEN AREA</div>
+
+
+            <!-- Bottom Row -->
+            <div class="room color-maroon room-201-stock" 
+                 data-pano-src="https://pannellum.org/images/alma.jpg"
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Room+201+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-room-name="Room 201 Stock Room"
+                 data-room-info="Storage room for Room 201.">ROOM 201<br>STOCK ROOM</div>
+            
+            <div class="room color-brown cen-computer-lab-2" 
+                 data-pano-src="lab2.jpg"
+                 data-image-srcs='{"occupied": ["static/C1RF.jpg","static/C1LF.jpg","static/C1MF.jpg","static/C1LB.jpg","static/C1MB.jpg","static/C1RB.jpg"], "unoccupied": ["static/C2B.jpg","static/C2F.jpg","static/C2L.jpg","static/C2MF2.jpg","static/C2LF.jpg"]}'
+                 data-video-src='{"occupied": "static/C1VID.mp4", "unoccupied": ""}'
+                 data-room-name="CEN Computer Lab 2"
+                 data-room-info="Second computer laboratory for engineering students.">CEN<br> COMPUTER LAB 2</div>
+            
+            <div class="room color-brown computer-stock-room-bottom" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/92752e/FFF?text=Computer+Stock+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Computer Stock Room"
+                 data-room-info="Storage for computer equipment.">COMPUTER<br>STOCK<br>ROOM</div>
+            
+            <div class="room color-brown cen-computer-lab-1" 
+                 data-pano-src="lab1.jpg"
+                 data-image-srcs='{"occupied": ["static/C2MF.jpg","static/C2RB.jpg","static/C2LB.jpg","static/C2MB.jpg"], "unoccupied": ["st/CB.jpg","st/CR.jpg","st/CL.jpg","st/CH.jpg","st/CM.jpg"]}'
+                 data-video-src='{"occupied": "static/C2VID.mp4", "unoccupied": ""}'
+                 data-room-name="CEN Computer Lab 1"
+                 data-room-info="First computer laboratory for engineering students.">CEN <br>COMPUTER LAB 1</div>
+            
+            <div class="room color-brown mechatronics" 
+                 data-pano-src="mecha.jpg"
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/92752e/FFF?text=Mechatronics+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "st/mecha.mp4", "unoccupied": ""}'
+                 data-room-name="Mechatronics Laboratory"
+                 data-room-info="Lab for mechatronics and robotics studies.">MECHATRONICS</div>
+            
+            <div class="room color-maroon comfort-male-bottom" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Male+Bottom+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Male Comfort Room (Bottom)"
+                 data-room-info="Restroom facilities for male students and faculty.">COMFORT<br>ROOM<br>MALE</div>
+            
+            <div class="room color-maroon comfort-female-bottom" 
+                 data-image-srcs='{"occupied": ["https://placehold.co/800x600/8c2a38/FFF?text=Comfort+Female+Bottom+Occupied+1"], "unoccupied": []}'
+                 data-video-src='{"occupied": "https://www.w3schools.com/html/mov_bbb.mp4", "unoccupied": ""}'
+                 data-private="true"
+                 data-room-name="Female Comfort Room (Bottom)"
+                 data-room-info="Restroom facilities for female students and faculty.">COMFORT<br>ROOM<br>FEMALE</div>
+
+            <!-- Special Elements (Stairs, Bridge Text) -->
+            <div class="room color-darkgrey stairs-top-left">STAIRS</div>
+            <div class="room color-darkgrey stairs-top-right">STAIRS</div>
+            <div class="room color-darkgrey stairs-bottom-right">STAIRS</div>
+
+            <div class="to-bridge" id="toBridgeBtn">TO BRIDGE</div>
+
+            <div class="bridge-line"></div>
+        </div>
+
+        <!-- --- MODAL STRUCTURE FOR DISPLAYING 360 IMAGES / STATIC IMAGES / VIDEOS --- -->
+        <div id="imageModal" class="image-modal-overlay">
+            <span class="close-button">&times;</span>
+            <div class="image-modal-content">
+                <!-- This div will be targeted by Pannellum to render the 360 panorama -->
+                <div id="panorama-viewer"></div>
+
+                <!-- Container for static image (initially hidden) -->
+                <div id="static-image-viewer">
+                    <img id="modalStaticImage" src="" alt="Room Static Image">
+                    <div class="image-navigation-buttons">
+                        <button id="prevImageBtn">&lt;</button>
+                        <span id="imageCounter" class="image-counter"></span>
+                        <button id="nextImageBtn">&gt;</button>
+                    </div>
+                </div>
+
+                <!-- Container for video (initially hidden) -->
+                <div id="video-viewer">
+                    <video id="modalVideo" controls muted playsinline></video>
+                </div>
+
+                <!-- Private Message Viewer (initially hidden) -->
+                <div id="private-message-viewer" class="private-message">
+                    <p>This room is private and access is restricted.</p>
+                    <p>Please contact faculty for more information.</p>
+                </div>
+
+                <!-- Media options buttons will now appear below the panorama -->
+                <div class="media-options">
+                    <button id="viewImageBtn">Static Image</button>
+                    <button id="viewVideoBtn">Video Tour</button>
+                </div>
+
+                <!-- New category buttons for images/videos -->
+                <div class="category-buttons" id="imageCategoryButtons" style="display: none;">
+                    <button id="occupiedImageBtn">Occupied Photos</button>
+                    <button id="unoccupiedImageBtn">Unoccupied Photos</button>
+                </div>
+                <div class="category-buttons" id="videoCategoryButtons" style="display: none;">
+                    <button id="occupiedVideoBtn">Occupied Video</button>
+                    <button id="unoccupiedVideoBtn">Unoccupied Video</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- Custom Message Box for Hotspots --- -->
+        <div id="customMessageBox" class="custom-message-box-overlay">
+            <div class="custom-message-box-content">
+                <h3 id="messageBoxTitle">Information</h3>
+                <p id="messageBoxText">This is a placeholder message.</p>
+                <button id="messageBoxCloseBtn">OK</button>
+            </div>
+        </div>
+
+        <!-- --- 3D Model Viewer Section --- -->
+        <div class="model-viewer-section">
+            <h2>Explore in 3D</h2>
+            <model-viewer 
+                id="mainModelViewer"
+                src="floorplan1.glb" 
+                alt="A 3D model of a room or object"
+                ar 
+                ar-modes="webxr scene-viewer quick-look" 
+                camera-controls 
+                shadow-intensity="1"
+                autoplay
+                environment-image="neutral"
+                exposure="1"
+                interaction-prompt="auto"
+            >
+                <!-- Example Hotspots - Adjust positions and content as needed -->
+                <button slot="hotspot-1" data-position="0 1 0" data-normal="0 1 0" data-title="Main Entrance" data-description="Welcome to the main entrance area.">
+                    <div class="dot"></div>
+                </button>
+                <button slot="hotspot-2" data-position="1 0.5 -0.5" data-normal="1 0 0" data-title="Lab Area" data-description="This could lead to Computer Lab 1.">
+                    <div class="dot"></div>
+                </button>
+                <button slot="hotspot-3" data-position="-0.8 0.7 0.2" data-normal="-1 0 0" data-title="Dean's Office" data-description="This is the Dean's Office section.">
+                    <div class="dot"></div>
+                </button>
+            </model-viewer>
+            <div class="model-loading-spinner" id="modelLoadingSpinner"></div>
+            <div class="model-viewer-controls">
+                <button id="resetCameraButton">Reset Camera</button>
+            </div>
+            <p style="color:#ccc; margin-top: 15px; font-size: 0.9em;">(Scroll and drag to interact with the 3D model)</p>
+        </div>
+    </div>
+
+    <!-- Tooltip element (hidden by default) -->
+    <div id="roomTooltip" class="room-tooltip">
+        <div class="tooltip-title"></div>
+        <div class="tooltip-description"></div>
+    </div>
+
+    <!-- Tone.js Library for subtle audio feedback -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <!-- Pannellum JavaScript Library -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+    <script>
+        let currentPannellumViewer = null; // Variable to hold the current Pannellum viewer instance
+        let currentRoomData = {}; // To store the data attributes of the clicked room
+        let panoramaLoadingSpinner = null; // To hold the loading spinner element
+        let modelLoadingSpinner = null; // To hold the 3D model loading spinner
+        let currentImageIndex = 0; // To keep track of the current static image being displayed
+        let currentImageCategory = 'occupied'; // Default category for images
+        let currentVideoCategory = 'occupied'; // Default category for videos
+
+        // --- Tone.js Audio Setup ---
+        // Create a simple synth for general clicks
+        const clickSynth = new Tone.Synth({
+            oscillator: {
+                type: "sine"
+            },
+            envelope: {
+                attack: 0.005,
+                decay: 0.05,
+                sustain: 0.01,
+                release: 0.1
+            }
+        }).toDestination();
+        clickSynth.volume.value = -20; // Very subtle volume
+
+        // Create a slightly different synth for room clicks
+        const roomClickSynth = new Tone.Synth({
+            oscillator: {
+                type: "triangle"
+            },
+            envelope: {
+                attack: 0.002,
+                decay: 0.08,
+                sustain: 0.02,
+                release: 0.15
+            }
+        }).toDestination();
+        roomClickSynth.volume.value = -18; // Slightly louder than general clicks
+
+        // Create a synth for modal open/close
+        const modalSynth = new Tone.Synth({
+            oscillator: {
+                type: "square"
+            },
+            envelope: {
+                attack: 0.01,
+                decay: 0.1,
+                sustain: 0.05,
+                release: 0.2
+            }
+        }).toDestination();
+        modalSynth.volume.value = -22; // Very subtle volume
+
+        // Function to play a sound
+        function playSound(synth, note = "C5", duration = "8n") {
+            // Ensure Tone.js context is started (required for audio to play)
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+            synth.triggerAttackRelease(note, duration);
+        }
+        // --- End Tone.js Audio Setup ---
+
+
+        // Function to show a loading spinner
+        function showLoadingSpinner(parentDiv, type = 'panorama') {
+            let spinner;
+            if (type === 'panorama') {
+                if (!panoramaLoadingSpinner) {
+                    panoramaLoadingSpinner = document.createElement('div');
+                    panoramaLoadingSpinner.className = 'loading-spinner';
+                    parentDiv.appendChild(panoramaLoadingSpinner);
+                }
+                spinner = panoramaLoadingSpinner;
+            } else if (type === 'model') {
+                if (!modelLoadingSpinner) {
+                    modelLoadingSpinner = document.createElement('div');
+                    modelLoadingSpinner.className = 'model-loading-spinner';
+                    parentDiv.appendChild(modelLoadingSpinner);
+                }
+                spinner = modelLoadingSpinner;
+            }
+            if (spinner) {
+                spinner.style.display = 'block';
+            }
+        }
+
+        // Function to hide the loading spinner
+        function hideLoadingSpinner(type = 'panorama') {
+            if (type === 'panorama' && panoramaLoadingSpinner) {
+                panoramaLoadingSpinner.style.display = 'none';
+            } else if (type === 'model' && modelLoadingSpinner) {
+                modelLoadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Function to show a custom message box
+        function showCustomMessageBox(title, message) {
+            const messageBox = document.getElementById('customMessageBox');
+            document.getElementById('messageBoxTitle').textContent = title;
+            document.getElementById('messageBoxText').textContent = message;
+            messageBox.classList.add('show'); // Use class for transition
+            playSound(modalSynth, "G4", "16n"); // Play sound on message box open
+        }
+
+        // Function to hide the custom message box
+        function hideCustomMessageBox() {
+            document.getElementById('customMessageBox').classList.remove('show'); // Use class for transition
+            playSound(modalSynth, "E4", "16n"); // Play sound on message box close
+        }
+
+        // Function to hide all media viewers and clean up
+        function hideAllMediaViewers() {
+            document.getElementById('panorama-viewer').style.display = 'none';
+            document.getElementById('static-image-viewer').style.display = 'none';
+            document.getElementById('video-viewer').style.display = 'none';
+            document.getElementById('private-message-viewer').style.display = 'none';
+            
+            // Stop and clear video if playing
+            const videoElement = document.getElementById('modalVideo');
+            if (videoElement) {
+                videoElement.pause();
+                videoElement.removeAttribute('src'); // Clear the video source
+                videoElement.load(); // Reload the video element to apply source change
+            }
+            // Destroy Pannellum instance if active
+            if (currentPannellumViewer) {
+                currentPannellumViewer.destroy();
+                currentPannellumViewer = null;
+            }
+            // Clear static image source
+            document.getElementById('modalStaticImage').src = '';
+            hideLoadingSpinner('panorama'); // Ensure panorama spinner is hidden
+            currentImageIndex = 0; // Reset image index when modal closes or media changes
+            updateImageNavigation(); // Update button states
+            // Hide category buttons
+            document.getElementById('imageCategoryButtons').style.display = 'none';
+            document.getElementById('videoCategoryButtons').style.display = 'none';
+        }
+
+        // Function to close the modal and clean up
+        function closePanoModal() {
+            imageModal.classList.remove('show'); // Hide the modal with transition
+            playSound(modalSynth, "D4", "16n"); // Play sound on modal close
+            // Give a small delay for the fade-out transition before hiding content
+            setTimeout(() => {
+                imageModal.style.display = 'none'; // Finally hide display after transition
+                hideAllMediaViewers(); // Hide and clean up all media viewers
+                // Hide media options when modal closes
+                document.querySelector('.media-options').style.display = 'none';
+            }, 300); // Match CSS transition duration
+        }
+
+        // Function to update the static image and navigation buttons
+        function updateStaticImage() {
+            const modalStaticImage = document.getElementById('modalStaticImage');
+            const imageCounter = document.getElementById('imageCounter');
+            const prevImageBtn = document.getElementById('prevImageBtn');
+            const nextImageBtn = document.getElementById('nextImageBtn');
+
+            const imagesToShow = currentRoomData.images ? currentRoomData.images[currentImageCategory] : [];
+
+            if (imagesToShow && imagesToShow.length > 0) {
+                modalStaticImage.src = imagesToShow[currentImageIndex];
+                modalStaticImage.onerror = function() {
+                    console.error("Failed to load image:", this.src);
+                    this.src = "https://placehold.co/800x600/FF0000/FFFFFF?text=Image+Load+Error"; // Fallback image
+                };
+                imageCounter.textContent = `${currentImageIndex + 1} / ${imagesToShow.length}`;
+                prevImageBtn.disabled = currentImageIndex === 0;
+                nextImageBtn.disabled = currentImageIndex === imagesToShow.length - 1;
+            } else {
+                modalStaticImage.src = '';
+                imageCounter.textContent = '';
+                prevImageBtn.disabled = true;
+                nextImageBtn.disabled = true;
+            }
+        }
+
+        // Function to update the visibility of image navigation buttons
+        function updateImageNavigation() {
+            const imageNavButtonsDiv = document.querySelector('.image-navigation-buttons');
+            const imagesToShow = currentRoomData.images ? currentRoomData.images[currentImageCategory] : [];
+            if (imagesToShow && imagesToShow.length > 1) {
+                imageNavButtonsDiv.style.display = 'flex';
+            } else {
+                imageNavButtonsDiv.style.display = 'none';
+            }
+        }
+
+        // Global variable for the tooltip element
+        let roomTooltip = null;
+
+        // Function to show tooltip
+        function showRoomTooltip(event, roomName, roomInfo) {
+            if (!roomTooltip) {
+                roomTooltip = document.createElement('div');
+                roomTooltip.id = 'roomTooltip';
+                roomTooltip.className = 'room-tooltip';
+                document.body.appendChild(roomTooltip);
+            }
+
+            const tooltipTitle = roomTooltip.querySelector('.tooltip-title') || document.createElement('div');
+            if (!roomTooltip.querySelector('.tooltip-title')) {
+                tooltipTitle.className = 'tooltip-title';
+                roomTooltip.appendChild(tooltipTitle);
+            }
+            tooltipTitle.textContent = roomName;
+
+            const tooltipDescription = roomTooltip.querySelector('.tooltip-description') || document.createElement('div');
+            if (!roomTooltip.querySelector('.tooltip-description')) {
+                tooltipDescription.className = 'tooltip-description';
+                roomTooltip.appendChild(tooltipDescription);
+            }
+            tooltipDescription.textContent = roomInfo;
+
+            // Position the tooltip near the mouse cursor
+            // Adjust position to prevent it from going off-screen
+            let x = event.clientX;
+            let y = event.clientY;
+
+            // Center horizontally relative to mouse, slightly above
+            roomTooltip.style.left = `${x}px`;
+            roomTooltip.style.top = `${y - 10}px`; // Initial offset for slide-up effect
+
+            // Adjust if it goes off right edge
+            const tooltipRect = roomTooltip.getBoundingClientRect();
+            if (x + tooltipRect.width / 2 > window.innerWidth) {
+                roomTooltip.style.left = `${window.innerWidth - tooltipRect.width / 2 - 10}px`; // 10px padding from edge
+            } else if (x - tooltipRect.width / 2 < 0) { // Adjust if it goes off left edge
+                roomTooltip.style.left = `${tooltipRect.width / 2 + 10}px`; // 10px padding from edge
+            } else {
+                roomTooltip.style.left = `${x}px`; // Keep centered
+            }
+            
+            // Adjust if it goes off top edge
+            if (y - tooltipRect.height - 20 < 0) { // 20px for cursor + padding
+                roomTooltip.style.top = `${y + 20}px`; // Place below cursor
+            } else {
+                roomTooltip.style.top = `${y - tooltipRect.height - 10}px`; // Place above cursor
+            }
+
+            roomTooltip.classList.add('show');
+        }
+
+        // Function to hide tooltip
+        function hideRoomTooltip() {
+            if (roomTooltip) {
+                roomTooltip.classList.remove('show');
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const landingPage = document.getElementById('landingPage');
+            const floorPlanApp = document.getElementById('floorPlanApp');
+            const enterButton = document.getElementById('enterButton');
+            const backToLandingBtn = document.getElementById('backToLandingBtn');
+
+            // Floor plan elements
+            const rooms = document.querySelectorAll('.room');
+            const imageModal = document.getElementById('imageModal');
+            const panoramaViewerDiv = document.getElementById('panorama-viewer');
+            const staticImageViewerDiv = document.getElementById('static-image-viewer');
+            const modalStaticImage = document.getElementById('modalStaticImage');
+            const videoViewerDiv = document.getElementById('video-viewer');
+            const modalVideo = document.getElementById('modalVideo');
+            const closeButton = document.querySelector('.close-button');
+            const mediaOptionsDiv = document.querySelector('.media-options');
+            const privateMessageViewerDiv = document.getElementById('private-message-viewer');
+            const toBridgeBtn = document.getElementById('toBridgeBtn');
+
+            const viewImageBtn = document.getElementById('viewImageBtn');
+            const viewVideoBtn = document = document.getElementById('viewVideoBtn');
+
+            const prevImageBtn = document.getElementById('prevImageBtn');
+            const nextImageBtn = document.getElementById('nextImageBtn');
+
+            const imageCategoryButtons = document.getElementById('imageCategoryButtons');
+            const occupiedImageBtn = document.getElementById('occupiedImageBtn');
+            const unoccupiedImageBtn = document.getElementById('unoccupiedImageBtn');
+
+            const videoCategoryButtons = document.getElementById('videoCategoryButtons');
+            const occupiedVideoBtn = document.getElementById('occupiedVideoBtn');
+            const unoccupiedVideoBtn = document.getElementById('unoccupiedVideoBtn');
+
+            const mainModelViewer = document.getElementById('mainModelViewer');
+            const modelViewerSection = document.querySelector('.model-viewer-section'); // Get the parent for the spinner
+            modelLoadingSpinner = document.getElementById('modelLoadingSpinner'); // Assign to global variable
+            const resetCameraButton = document.getElementById('resetCameraButton');
+            const modelHotspots = mainModelViewer ? mainModelViewer.querySelectorAll('button[slot^="hotspot-"]') : [];
+
+
+            // Event listener for the Enter button on the landing page
+            enterButton.addEventListener('click', () => {
+                playSound(clickSynth, "C5", "16n"); // Play sound on button click
+                landingPage.style.display = 'none'; // Hide the landing page
+                floorPlanApp.style.display = 'flex'; // Show the floor plan application
+                // Adjust body padding for the fixed header of the floor plan
+                document.body.style.paddingTop = 'var(--estimated-header-total-height)';
+            });
+
+            // Event listener for the "Back to Landing Page" button
+            backToLandingBtn.addEventListener('click', () => {
+                playSound(clickSynth, "A4", "16n"); // Play sound on button click
+                floorPlanApp.style.display = 'none'; // Hide the floor plan application
+                landingPage.style.display = 'flex'; // Show the landing page
+                document.body.style.paddingTop = '0'; // Reset body padding
+            });
+
+            // Add click event listener to each room (for floor plan app)
+            rooms.forEach(room => {
+                // Check if the room has any media data or is private
+                // Only add click listener if it has media or is explicitly private and needs a message
+                const hasMedia = room.dataset.panoSrc || (room.dataset.imageSrcs && JSON.parse(room.dataset.imageSrcs).occupied.length > 0) || (room.dataset.imageSrcs && JSON.parse(room.dataset.imageSrcs).unoccupied.length > 0) || (room.dataset.videoSrc && (JSON.parse(room.dataset.videoSrc).occupied || JSON.parse(room.dataset.videoSrc).unoccupied));
+                const isPrivate = room.dataset.private === 'true';
+
+                // Rooms with `cursor: default;` in CSS should not be clickable for media
+                // Check if the room has specific classes that make it non-clickable for media
+                const isNonClickableForMedia = room.classList.contains('open-below') || room.classList.contains('open-area-small') || room.classList.contains('stairs-top-left') || room.classList.contains('stairs-top-right') || room.classList.contains('stairs-bottom-right');
+
+
+                if ((hasMedia || isPrivate) && !isNonClickableForMedia) {
+                    room.addEventListener('click', () => {
+                        playSound(roomClickSynth, "E5", "16n"); // Play sound for room click
+                        // Add temporary click feedback class
+                        room.classList.add('clicked-feedback');
+                        setTimeout(() => {
+                            room.classList.remove('clicked-feedback');
+                        }, 200); // Remove after a short delay
+
+                        // Store all data attributes from the clicked room
+                        currentRoomData = {
+                            '360': room.dataset.panoSrc, 
+                            'images': room.dataset.imageSrcs ? JSON.parse(room.dataset.imageSrcs) : {occupied: [], unoccupied: []},
+                            'video': room.dataset.videoSrc ? JSON.parse(room.dataset.videoSrc) : {occupied: "", unoccupied: ""},
+                            'private': isPrivate 
+                        };
+                        currentImageIndex = 0; // Reset index for new room
+                        currentImageCategory = 'occupied'; // Default to occupied for images
+                        currentVideoCategory = 'occupied'; // Default to occupied for videos
+
+                        // Initially hide all media viewers
+                        hideAllMediaViewers();
+                        imageModal.style.display = 'flex'; // Show the modal container
+                        imageModal.classList.add('show'); // Trigger fade-in animation
+                        playSound(modalSynth, "C5", "16n"); // Play sound on modal open
+
+                        if (currentRoomData['private']) {
+                            // If it's a private room, show the private message and hide media options
+                            privateMessageViewerDiv.style.display = 'flex';
+                            mediaOptionsDiv.style.display = 'none';
+                        } else {
+                            // If not private, show media options and proceed with media display
+                            mediaOptionsDiv.style.display = 'flex';
+
+                            // Determine visibility of main "Static Image" and "Video Tour" buttons
+                            const hasOccupiedImages = currentRoomData.images && currentRoomData.images.occupied && currentRoomData.images.occupied.length > 0;
+                            const hasUnoccupiedImages = currentRoomData.images && currentRoomData.images.unoccupied && currentRoomData.images.unoccupied.length > 0;
+                            const hasOccupiedVideo = currentRoomData.video && currentRoomData.video.occupied;
+                            const hasUnoccupiedVideo = currentRoomData.video && currentRoomData.video.unoccupied;
+
+                            viewImageBtn.style.display = (hasOccupiedImages || hasUnoccupiedImages) ? 'block' : 'none';
+                            viewVideoBtn.style.display = (hasOccupiedVideo || hasUnoccupiedVideo) ? 'block' : 'none';
+
+                            // Always show 360 view first if available
+                            if (currentRoomData['360']) {
+                                panoramaViewerDiv.style.display = 'flex';
+                                showLoadingSpinner(panoramaViewerDiv, 'panorama'); // Show spinner before loading panorama
+                                currentPannellumViewer = pannellum.viewer('panorama-viewer', {
+                                    "type": "equirectangular",
+                                    "panorama": currentRoomData['360'],
+                                    "autoLoad": true,
+                                    "compass": true,
+                                    "mouseZoom": true,
+                                    "hfov": 100,
+                                    "vaov": 100,
+                                    "vOffset": 0,
+                                    "showZoom": true,
+                                    "showFullscreen": true,
+                                    "yaw": 0,
+                                    "pitch": 0
+                                });
+                                currentPannellumViewer.on('load', () => hideLoadingSpinner('panorama'));
+                                currentPannellumViewer.on('error', () => hideLoadingSpinner('panorama'));
+                            } else {
+                                console.log('360 panorama not available for this room. Showing other options if available.');
+                                hideLoadingSpinner('panorama');
+                                if (viewImageBtn.style.display === 'block') {
+                                    showImageView(hasOccupiedImages ? 'occupied' : 'unoccupied');
+                                } else if (viewVideoBtn.style.display === 'block') {
+                                    showVideoView(hasOccupiedVideo ? 'occupied' : 'unoccupied');
+                                }
+                            }
+                        }
+                    });
+
+                    // Add mouseover and mouseout for tooltips
+                    room.addEventListener('mouseover', (event) => {
+                        const roomName = room.dataset.roomName || room.textContent.trim().replace(/\s+/g, ' ');
+                        const roomInfo = room.dataset.roomInfo || 'No additional information.';
+                        showRoomTooltip(event, roomName, roomInfo);
+                    });
+                    room.addEventListener('mousemove', (event) => {
+                        if (roomTooltip && roomTooltip.classList.contains('show')) {
+                            // Update tooltip position to follow mouse
+                            let x = event.clientX;
+                            let y = event.clientY;
+                            const tooltipRect = roomTooltip.getBoundingClientRect();
+
+                            if (x + tooltipRect.width / 2 > window.innerWidth) {
+                                roomTooltip.style.left = `${window.innerWidth - tooltipRect.width / 2 - 10}px`;
+                            } else if (x - tooltipRect.width / 2 < 0) {
+                                roomTooltip.style.left = `${tooltipRect.width / 2 + 10}px`;
+                            } else {
+                                roomTooltip.style.left = `${x}px`;
+                            }
+                            
+                            if (y - tooltipRect.height - 20 < 0) {
+                                roomTooltip.style.top = `${y + 20}px`;
+                            } else {
+                                roomTooltip.style.top = `${y - tooltipRect.height - 10}px`;
+                            }
+                        }
+                    });
+                    room.addEventListener('mouseout', hideRoomTooltip);
+
+                } else {
+                    // For rooms without any media data or private flag (like stairs, or explicitly non-clickable rooms), ensure they are not clickable
+                    room.style.cursor = 'default';
+                    // Remove hover effects for non-clickable rooms if they were set by default .room:hover
+                    room.classList.add('non-interactive-room'); // Add a class to remove hover effects
+                }
+            });
+
+            // Functions to display specific media types
+            function showImageView(category = currentImageCategory) {
+                playSound(clickSynth, "C5", "16n"); // Play sound on button click
+                hideAllMediaViewers();
+                currentImageCategory = category; // Set the current category
+                const imagesToShow = currentRoomData.images ? currentRoomData.images[currentImageCategory] : [];
+
+                if (imagesToShow && imagesToShow.length > 0) {
+                    staticImageViewerDiv.style.display = 'flex';
+                    currentImageIndex = 0; // Reset index when switching categories
+                    updateStaticImage(); // Display the current image and update navigation buttons
+                    updateImageNavigation(); // Show/hide navigation buttons based on image count
+                } else {
+                    console.log(`Static ${category} images not available for this room.`);
+                    // Optionally show a message if no images in selected category
+                    showCustomMessageBox('No Images', `No ${category} images available for this room.`);
+                }
+
+                // Show/hide image category buttons
+                const hasOccupiedImages = currentRoomData.images && currentRoomData.images.occupied && currentRoomData.images.occupied.length > 0;
+                const hasUnoccupiedImages = currentRoomData.images && currentRoomData.images.unoccupied && currentRoomData.images.unoccupied.length > 0;
+
+                if (hasOccupiedImages || hasUnoccupiedImages) {
+                    imageCategoryButtons.style.display = 'flex';
+                    occupiedImageBtn.style.display = hasOccupiedImages ? 'block' : 'none';
+                    unoccupiedImageBtn.style.display = hasUnoccupiedImages ? 'block' : 'none';
+
+                    // Set active class
+                    occupiedImageBtn.classList.remove('active');
+                    unoccupiedImageBtn.classList.remove('active');
+                    if (category === 'occupied' && hasOccupiedImages) {
+                        occupiedImageBtn.classList.add('active');
+                    } else if (category === 'unoccupied' && hasUnoccupiedImages) {
+                        unoccupiedImageBtn.classList.add('active');
+                    }
+                } else {
+                    imageCategoryButtons.style.display = 'none';
+                }
+                videoCategoryButtons.style.display = 'none'; // Hide video category buttons
+            }
+
+            function showVideoView(category = currentVideoCategory) {
+                playSound(clickSynth, "C5", "16n"); // Play sound on button click
+                hideAllMediaViewers();
+                currentVideoCategory = category; // Set the current category
+                const videoToShow = currentRoomData.video ? currentRoomData.video[currentVideoCategory] : '';
+
+                if (videoToShow) {
+                    videoViewerDiv.style.display = 'flex';
+                    modalVideo.src = videoToShow;
+                    modalVideo.load();
+                    modalVideo.play().catch(error => console.error("Video play failed:", error));
+                } else {
+                    console.log(`Video not available for ${category} category for this room.`);
+                    showCustomMessageBox('No Video', `No ${category} video available for this room.`);
+                }
+
+                // Show/hide video category buttons
+                const hasOccupiedVideo = currentRoomData.video && currentRoomData.video.occupied;
+                const hasUnoccupiedVideo = currentRoomData.video && currentRoomData.video.unoccupied;
+
+                if (hasOccupiedVideo || hasUnoccupiedVideo) {
+                    videoCategoryButtons.style.display = 'flex';
+                    occupiedVideoBtn.style.display = hasOccupiedVideo ? 'block' : 'none';
+                    unoccupiedVideoBtn.style.display = hasUnoccupiedVideo ? 'block' : 'none';
+
+                    // Set active class
+                    occupiedVideoBtn.classList.remove('active');
+                    unoccupiedVideoBtn.classList.remove('active');
+                    if (category === 'occupied' && hasOccupiedVideo) {
+                        occupiedVideoBtn.classList.add('active');
+                    } else if (category === 'unoccupied' && hasUnoccupiedVideo) {
+                        unoccupiedVideoBtn.classList.add('active');
+                    }
+                } else {
+                    videoCategoryButtons.style.display = 'none';
+                }
+                imageCategoryButtons.style.display = 'none'; // Hide image category buttons
+            }
+
+            // Add event listeners for the main media type buttons
+            viewImageBtn.addEventListener('click', () => showImageView(currentImageCategory));
+            viewVideoBtn.addEventListener('click', () => showVideoView(currentVideoCategory));
+
+            // Add event listeners for the new category buttons
+            occupiedImageBtn.addEventListener('click', () => showImageView('occupied'));
+            unoccupiedImageBtn.addEventListener('click', () => showImageView('unoccupied'));
+            occupiedVideoBtn.addEventListener('click', () => showVideoView('occupied'));
+            unoccupiedVideoBtn.addEventListener('click', () => showVideoView('unoccupied'));
+
+
+            // Static image navigation
+            prevImageBtn.addEventListener('click', () => {
+                playSound(clickSynth, "D5", "32n"); // Play sound for navigation
+                if (currentImageIndex > 0) {
+                    currentImageIndex--;
+                    updateStaticImage();
+                }
+            });
+
+            nextImageBtn.addEventListener('click', () => {
+                playSound(clickSynth, "E5", "32n"); // Play sound for navigation
+                const imagesToShow = currentRoomData.images ? currentRoomData.images[currentImageCategory] : [];
+                if (currentImageIndex < imagesToShow.length - 1) {
+                    currentImageIndex++;
+                    updateStaticImage();
+                }
+            });
+
+            // Close the modal when the close button is clicked
+            closeButton.addEventListener('click', closePanoModal);
+
+            // Close the modal when clicking anywhere outside the modal content
+            imageModal.addEventListener('click', (event) => {
+                if (event.target === imageModal) {
+                    closePanoModal();
+                }
+            });
+
+            // Close custom message box
+            document.getElementById('messageBoxCloseBtn').addEventListener('click', () => {
+                hideCustomMessageBox();
+                playSound(clickSynth, "C4", "16n"); // Play sound on message box close button
+            });
+            document.getElementById('customMessageBox').addEventListener('click', (event) => {
+                if (event.target === document.getElementById('customMessageBox')) {
+                    hideCustomMessageBox();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && imageModal.classList.contains('show')) {
+                    closePanoModal();
+                }
+                if (event.key === 'Escape' && document.getElementById('customMessageBox').classList.contains('show')) {
+                    hideCustomMessageBox();
+                }
+            });
+
+            // "To Bridge" button functionality
+            if (toBridgeBtn) { // Check if element exists
+                toBridgeBtn.addEventListener('click', () => {
+                    playSound(clickSynth, "G5", "16n"); // Play sound for bridge button
+                    showCustomMessageBox('Navigation', 'Currently, this bridge leads to another floor. Feature coming soon!');
+                });
+            }
+
+            // 3D Model Viewer Controls
+            if (mainModelViewer) {
+                // Show spinner when model starts loading
+                mainModelViewer.addEventListener('loadstart', () => {
+                    showLoadingSpinner(modelViewerSection, 'model');
+                });
+
+                // Hide spinner when model finishes loading
+                mainModelViewer.addEventListener('load', () => {
+                    hideLoadingSpinner('model');
+                });
+
+                // Hide spinner on error
+                mainModelViewer.addEventListener('error', () => {
+                    hideLoadingSpinner('model');
+                    console.error("Error loading 3D model.");
+                    showCustomMessageBox("Error", "Failed to load 3D model. Please try again later.");
+                });
+
+                // Reset Camera button functionality
+                resetCameraButton.addEventListener('click', () => {
+                    playSound(clickSynth, "C5", "16n"); // Play sound on button click
+                    mainModelViewer.cameraOrbit = '0deg 75deg 105%'; // Default orbit
+                    mainModelViewer.fieldOfView = '45deg'; // Default FOV
+                });
+
+                // Hotspot click functionality
+                modelHotspots.forEach(hotspot => {
+                    hotspot.addEventListener('click', () => {
+                        playSound(clickSynth, "F5", "16n"); // Play sound for hotspot click
+                        const title = hotspot.dataset.title || 'Information';
+                        const description = hotspot.dataset.description || 'No description available.';
+                        showCustomMessageBox(title, description);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
